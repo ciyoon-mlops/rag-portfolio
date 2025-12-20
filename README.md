@@ -6,9 +6,9 @@ I am using my Azure AI-102 certification knowledge and building step by step fro
 The goal is to show how RAG can evolve:  
 Local → Developer Tool Integration → Advanced Graph RAG → Cloud Deployment.
 
-## Current Projects
+## Planned Projects
 
-### Local RAG (FAISS + LangChain Agentic) ✅ Completed
+### Local RAG (FAISS + LangChain Agentic) ⏳ Planned
 - Loads PDF document ("세이노의 가르침" – official free PDF)
 - Splits text into chunks and builds FAISS vector database
 - Uses HyDE and Multi-Query techniques
@@ -18,9 +18,7 @@ Local → Developer Tool Integration → Advanced Graph RAG → Cloud Deployment
 
 → Check the folder: [/local-rag](./local-rag)
 
-## In Progress / Planned
-
-### MCP RAG (Developer Tool Integration) 🔄 In Progress
+### MCP RAG (Developer Tool Integration) ⏳ Planned
 - Turns the Local RAG into an MCP server (using FastAPI)
 - Lets VS Code extension **Continue.dev** call my private documents in real time
 - Great for coding with my own knowledge base
