@@ -30,7 +30,7 @@ This project implements an end-to-end RAG pipeline that:
          │
          ▼
 ┌─────────────────┐
-│   Embeddings    │ (HuggingFace MiniLM)
+│   Embeddings    │ (jhgan/ko-sroberta-multitask)
 └────────┬────────┘
          │
          ▼
@@ -60,21 +60,18 @@ This project implements an end-to-end RAG pipeline that:
 ## 📁 Project Structure
 
 ```
-qwen/
+.
 ├── README.md                      # This file
 ├── requirements.txt               # Python dependencies
-├── .gitignore                     # Git ignore rules
-│
 ├── build_faiss_index.py           # Vector DB creation script
-├── query_rag_ollama.py            # Complete RAG system (14B model)
-├── rag_sayno3_pipeline.py         # Partial pipeline code
+├── query_rag_ollama.py            # RAG query system (Ollama + FAISS)
 ├── example_usage.py               # Interactive usage examples
-│
+├── eval_rag_reference.py          # Optional: evaluate vs reference.json
+├── reference.json                 # Optional: gold Q&A for eval
 ├── faiss_index/                   # Generated vector database
 │   ├── index.faiss
 │   └── index.pkl
-│
-└── sayno_230405.pdf              # Source document
+└── sayno_230405.pdf               # Source document (repo root)
 ```
 
 ## 🚀 Quick Start
@@ -95,7 +92,7 @@ qwen/
 1. Clone the repository:
   ```bash
    git clone <your-repo-url>
-   cd qwen
+   cd <your-repo-directory>
   ```
 2. Set up Python prerequisite:
   ```bash
@@ -108,7 +105,7 @@ qwen/
   ```bash
    pip install -r requirements.txt
   ```
-4. Build the vector database:
+4. Build the vector database (run from the repo root so **`sayno_230405.pdf`** resolves as a path relative to that directory):
   ```bash
    python build_faiss_index.py
   ```
@@ -119,6 +116,10 @@ qwen/
   ```
    Or use the interactive example:
 
+```bash
+python example_usage.py
+```
+
 ## 📝 Scripts Description
 
 ### 1. `build_faiss_index.py` - Vector Database Builder
@@ -127,9 +128,9 @@ qwen/
 
 **Features**:
 
-- Loads PDF documents using LangChain's PyPDFLoader
+- Loads PDF documents using LangChain's PyPDFLoader (default: **`sayno_230405.pdf`** at the repository root, relative path)
 - Splits documents into chunks (1000 characters, 200 overlap)
-- Generates embeddings using HuggingFace's `all-MiniLM-L6-v2` model
+- Generates embeddings using HuggingFace **`jhgan/ko-sroberta-multitask`**
 - Creates FAISS vector store and saves to `faiss_index/` directory
 
 **Usage**:
@@ -138,17 +139,17 @@ qwen/
 python build_faiss_index.py
 ```
 
-### 2. `rag_sayno_full.py` - Complete RAG System (14B)
+### 2. `query_rag_ollama.py` - Complete RAG System (14B)
 
-**Purpose**: Full-featured RAG query system using the larger 14B Qwen model.
+**Purpose**: Full-featured RAG query system using the larger 14B Qwen model (configurable).
 
 **Features**:
 
 - Loads pre-built FAISS vector database
-- Uses `qwen2.5:14b` model for higher accuracy
+- Uses `qwen2.5:14b` model for higher accuracy (7B optional in code)
 - Retrieves top 5 relevant document chunks
 - Provides answers with source document citations
-- Includes interactive `ask_question()` function
+- Exposes `ask_question()` for programmatic or interactive use
 
 **Usage**:
 
@@ -160,7 +161,7 @@ python query_rag_ollama.py
 
 ### Model Selection
 
-In `rag_sayno_full.py`, you can switch between models:
+In **`query_rag_ollama.py`**, you can switch between models:
 
 ```python
 # For faster inference (7B model)
@@ -178,15 +179,25 @@ Adjust the number of retrieved documents:
 retriever = vectorstore.as_retriever(search_kwargs={"k": 5})  # Change k value
 ```
 
-### Chunking Parameters
+### Chunking and PDF path
 
-Modify chunk size and overlap in `rag_sayno2_faiss.py`:
+Modify chunk size, overlap, and PDF path in **`build_faiss_index.py`**:
 
 ```python
+loader = PyPDFLoader("sayno_230405.pdf")  # relative to cwd when you run the script
+
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000,      # Adjust chunk size
     chunk_overlap=200     # Adjust overlap
 )
+```
+
+### Embeddings
+
+Both **`build_faiss_index.py`** and **`query_rag_ollama.py`** must use the same model:
+
+```python
+EMBEDDING_MODEL = "jhgan/ko-sroberta-multitask"
 ```
 
 ## 💡 Example Usage
@@ -194,7 +205,7 @@ text_splitter = RecursiveCharacterTextSplitter(
 ### Programmatic Usage
 
 ```python
-from rag_sayno_full import ask_question
+from query_rag_ollama import ask_question
 
 # Ask questions about the document
 ask_question("월급쟁이의 재테크 수단은?")
@@ -210,15 +221,18 @@ Run the example script for an interactive session:
 python example_usage.py
 ```
 
-**Output Example**:
+**Output Example** (from `query_rag_ollama.py` / `example_usage.py`):
 
 ```
-질문: 월급쟁이의 재테크 수단은?
-답변: [Generated answer based on retrieved documents]
+Question: 월급쟁이의 재테크 수단은?
 
-=== 참고한 문서 일부 ===
+=== Retrieved Documents and Similarity Scores (lower score = more similar) ===
+1. Score: ... | Content: ...
+
+Answer: [Generated answer based on retrieved documents]
+
+=== Referenced Documents (partial) ===
 1. [Relevant document chunk 1]...
-2. [Relevant document chunk 2]...
 ```
 
 ## 🛠️ Technologies Used
@@ -240,7 +254,7 @@ python example_usage.py
 ## 🔍 How It Works
 
 1. **Document Processing**: PDF is loaded and split into semantic chunks
-2. **Embedding Generation**: Each chunk is converted to a vector using sentence transformers
+2. **Embedding Generation**: Each chunk is converted to a vector using **`jhgan/ko-sroberta-multitask`**
 3. **Vector Storage**: Embeddings are stored in FAISS for fast similarity search
 4. **Query Processing**: User query is embedded and matched against stored vectors
 5. **Context Retrieval**: Top-K most similar chunks are retrieved

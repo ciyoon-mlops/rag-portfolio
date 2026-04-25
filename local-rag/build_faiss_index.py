@@ -8,7 +8,7 @@ from langchain_community.vectorstores import FAISS       # updated import
 EMBEDDING_MODEL = "jhgan/ko-sroberta-multitask"
 
 # 1. Load PDF (set the path to your own file!)
-loader = PyPDFLoader("/Users/dol/Projects/rag-practice-sayno/qwen/sayno_230405.pdf")  # example path
+loader = PyPDFLoader("sayno_230405.pdf")  # repo root; run from project directory
 documents = loader.load()
 
 # 2. Split into chunks
