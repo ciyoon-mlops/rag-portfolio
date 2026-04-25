@@ -210,3 +210,4 @@ __marimo__/
 *.faiss
 *.pkl
 data/db/
+.DS_Store
