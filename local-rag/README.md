@@ -282,6 +282,12 @@ This project is open source and available under the MIT License.
 - Facebook AI Research for FAISS
 - HuggingFace for embedding models
 
+## Contact
+- LinkedIn: https://www.linkedin.com/in/ciyoon-mlops
+- Please contact me via LinkedIn message (GitHub email is private to avoid spam)
+
+Thank you for visiting! 🚀
+
 ---
 
 **Built with ❤️ using Python, LangChain, FAISS, and Qwen LLM**

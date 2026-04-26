@@ -8,7 +8,7 @@ Local → Developer Tool Integration → Advanced Graph RAG → Cloud Deployment
 
 ## Planned Projects
 
-### Local RAG (FAISS + LangChain Agentic) ⏳ Planned
+### Local RAG (FAISS + LangChain Agentic) ✅ Implemented
 - Loads PDF document ("세이노의 가르침" – official free PDF)
 - Splits text into chunks and builds FAISS vector database
 - Uses HyDE and Multi-Query techniques
@@ -40,7 +40,7 @@ This helps me learn deeply and shows employers that I can grow with new AI tools
 Feel free to explore the code and try it yourself!
 
 ## Contact
-- LinkedIn: www.linkedin.com/in/ciyoon-mlops
+- LinkedIn: https://www.linkedin.com/in/ciyoon-mlops
 - Please contact me via LinkedIn message (GitHub email is private to avoid spam)
 
 Thank you for visiting! 🚀
